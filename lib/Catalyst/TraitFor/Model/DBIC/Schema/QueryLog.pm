@@ -14,7 +14,7 @@ with 'Catalyst::Component::InstancePerContext';
 
 =head1 SYNOPSIS
 
-    use base qw/DBIx::Class::Schema/;
+    use base qw/Catalyst::Model::DBIC::Schema/;
     
     __PACKAGE__->config({
         traits => ['QueryLog']

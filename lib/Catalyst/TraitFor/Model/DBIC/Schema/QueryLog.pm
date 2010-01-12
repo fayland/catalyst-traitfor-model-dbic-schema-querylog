@@ -22,6 +22,16 @@ with 'Catalyst::Component::InstancePerContext';
             ['dbi:mysql:master', 'user', 'pass'],
     });
 
+    # or
+    __PACKAGE__->config({
+        traits => ['QueryLog']
+        connect_info => 
+            ['dbi:mysql:master', 'user', 'pass'],
+        querylog_args => {
+            passthrough => 1,
+        },
+    });
+
 =head1 DESCRIPTION
 
 check L<Catalyst::Model::DBIC::Schema> for more details
@@ -39,6 +49,10 @@ an instance of L<DBIx::Class::QueryLog>.
 =item querylog_analyzer
 
 an instance of L<DBIx::Class::QueryLog::Analyzer>.
+
+=item querylog_args
+
+passed to DBIx::Class::QueryLog->new;
 
 =back
 
@@ -117,6 +131,11 @@ has 'querylog' => (
     is => 'rw',
     isa => 'DBIx::Class::QueryLog',
 );
+has 'querylog_args' => (
+    is => 'rw',
+    isa => 'HashRef',
+    default => sub { {} },
+);
 has 'querylog_analyzer' => (
     is => 'rw',
     isa => 'DBIx::Class::QueryLog::Analyzer',
@@ -133,7 +152,8 @@ sub build_per_context_instance {
 
     my $schema = $self->schema;
     
-    my $querylog = DBIx::Class::QueryLog->new();
+    my $querylog_args = $self->querylog_args;
+    my $querylog = DBIx::Class::QueryLog->new($querylog_args);
     $self->querylog($querylog);
     $self->clear_querylog_analyzer;
 

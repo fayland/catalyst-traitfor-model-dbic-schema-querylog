@@ -17,14 +17,14 @@ with 'Catalyst::Component::InstancePerContext';
     use base qw/Catalyst::Model::DBIC::Schema/;
     
     __PACKAGE__->config({
-        traits => ['QueryLog']
+        traits => ['QueryLog'],
         connect_info => 
             ['dbi:mysql:master', 'user', 'pass'],
     });
 
     # or
     __PACKAGE__->config({
-        traits => ['QueryLog']
+        traits => ['QueryLog'],
         connect_info => 
             ['dbi:mysql:master', 'user', 'pass'],
         querylog_args => {

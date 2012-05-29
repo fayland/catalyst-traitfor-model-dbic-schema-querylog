@@ -129,39 +129,43 @@ L<Catalyst::Component::InstancePerContext>
 =cut
 
 has 'querylog' => (
-    is => 'rw',
+    is => 'ro',
     isa => 'DBIx::Class::QueryLog',
+    writer => '_set_querylog',
 );
 has 'querylog_args' => (
-    is => 'rw',
+    is => 'ro',
     isa => 'HashRef',
     default => sub { {} },
 );
 has 'querylog_analyzer' => (
-    is => 'rw',
+    is => 'ro',
     isa => 'DBIx::Class::QueryLog::Analyzer',
     lazy_build => 1
 );
 sub _build_querylog_analyzer {
     my $self = shift;
-    
+
     return DBIx::Class::QueryLog::Analyzer->new({ querylog => $self->querylog });
 }
 
 sub build_per_context_instance {
     my ($self, $c) = @_;
 
-    my $schema = $self->schema;
-    
+    return $self unless blessed($ctx);
+
+    my $new = bless {%$self}, ref $self;
+    $new->clear_querylog_analyzer;
+
+    my $schema = $new->schema($new->schema->clone());
+
     my $querylog_args = $self->querylog_args;
     my $querylog = DBIx::Class::QueryLog->new($querylog_args);
-    $self->querylog($querylog);
-    $self->clear_querylog_analyzer;
-
+    $new->_set_querylog($querylog);
     $schema->storage->debugobj( $querylog );
     $schema->storage->debug(1);
 
-    return $self;
+    return $new;
 }
 
 1;

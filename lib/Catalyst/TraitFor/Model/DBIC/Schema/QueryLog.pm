@@ -14,18 +14,19 @@ with 'Catalyst::Component::InstancePerContext';
 
 =head1 SYNOPSIS
 
-    use base qw/Catalyst::Model::DBIC::Schema/;
-    
+    use Moose;
+    extends qw/Catalyst::Model::DBIC::Schema/;
+
     __PACKAGE__->config({
         traits => ['QueryLog'],
-        connect_info => 
+        connect_info =>
             ['dbi:mysql:master', 'user', 'pass'],
     });
 
     # or
     __PACKAGE__->config({
         traits => ['QueryLog'],
-        connect_info => 
+        connect_info =>
             ['dbi:mysql:master', 'user', 'pass'],
         querylog_args => {
             passthrough => 1,
